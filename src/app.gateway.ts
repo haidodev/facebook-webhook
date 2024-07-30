@@ -8,14 +8,12 @@ import { Server, Socket } from "socket.io";
     }
 })
 export class AppGateway implements OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect {
-    // constructor(private readonly )
     @WebSocketServer() server: Server;
 
     private logger: Logger = new Logger(AppGateway.name);
 
     @SubscribeMessage('msgToServer')
     handleMessage(
-        @ConnectedSocket() client: Socket,
         @MessageBody() payload: string
     ): void {
         this.server.emit('msgToClient', payload);
