@@ -7,7 +7,12 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { WebhookModule } from './webhook/webhook.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ConversationsModule, WebhookModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }), 
+    ConversationsModule, 
+    WebhookModule],
   controllers: [AppController],
   providers: [AppService, AppGateway],
 })
