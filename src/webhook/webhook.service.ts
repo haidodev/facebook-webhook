@@ -18,18 +18,17 @@ export class WebhookService {
     }
     throw new UnauthorizedException();
   }
-  receiveMessage(body: WebhookMessage): Promise<Conversation[]> {
+  async receiveMessage(body: WebhookMessage): Promise<Conversation[]> {
     if (body.object === 'page') {
       const sendersID = [
         ...new Set(body.entry.map((entry) => entry.messaging[0].sender.id)),
       ];
-      return Promise.all(
-        sendersID.map((conversation) =>
-          this.conversationsService.getConversationByParticipantID(
-            conversation,
-          ),
+      const senderConversations = Promise.all(
+        sendersID.map((senderID) =>
+          this.conversationsService.getConversationByParticipantID(senderID),
         ),
       );
+      return (await senderConversations).flatMap((conversation) => conversation);
     }
     throw new BadRequestException();
   }

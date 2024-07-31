@@ -49,7 +49,7 @@ export class ConversationsService {
     );
     return response.data;
   }
-  async getConversationByParticipantID(id: string) : Promise<Conversation> {
+  async getConversationByParticipantID(id: string) : Promise<Conversation[]> {
     // const cachedConversations =
     //   await this.cacheManager.get<Conversation[]>('conversations');
     // if (cachedConversations) {
@@ -75,7 +75,7 @@ export class ConversationsService {
       },
     );
     // this.cacheManager.set('conversations', [...cachedConversations ,response.data]);
-    return response.data;
+    return response.data.data;
   }
 }
 
