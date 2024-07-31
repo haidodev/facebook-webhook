@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { Conversation } from 'src/model/conversation.type';
 
 @Injectable()
 export class ConversationsService {
@@ -30,7 +31,7 @@ export class ConversationsService {
       {
         params: {
           fields:
-            'id,participants,messages.limit(30){message,attachments{generic_template,id,image_data,mime_type,name,video_data,file_url},from,created_time,id,sticker}',
+            'id,participants,messages.limit(100){message,attachments{generic_template,id,image_data,mime_type,name,video_data,file_url},from,created_time,id,sticker}',
           access_token: this.configService.get<string>('PAGE_ACCESS_TOKEN'),
         },
       },
@@ -48,7 +49,7 @@ export class ConversationsService {
     );
     return response.data;
   }
-  async getConversationByParticipantID(id: string) {
+  async getConversationByParticipantID(id: string) : Promise<Conversation> {
     // const cachedConversations =
     //   await this.cacheManager.get<Conversation[]>('conversations');
     // if (cachedConversations) {
@@ -64,7 +65,7 @@ export class ConversationsService {
     //   }
     // }
     const response = await axios.get(
-      `${this.configService.get<string>('FACEBOOK_GRAPH_URL')}/${id}`,
+      `${this.configService.get<string>('FACEBOOK_GRAPH_URL')}/me/conversations`,
       {
         params: {
           user_id: id,

@@ -14,8 +14,9 @@ export class WebhookController {
         return this.webhookService.verifyWebhook(res.query);
       }
       @Post()
-      receiveMessage(@Body() body: any): void {
-        const message = this.webhookService.receiveMessage(body);
+      async receiveMessage(@Body() body: any) {
+        const message = await this.webhookService.receiveMessage(body);
+        console.log(message);
         this.appGateway.server.emit('msgToClient', message);
       }
 }

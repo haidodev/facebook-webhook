@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';
 
 @Controller('conversations')
@@ -8,8 +8,8 @@ export class ConversationsController {
     async getAllConversations() {
         return this.conversationsService.getAllConversations();
     }
-    @Get(':id')
-    async getConversationByID(id: string) {
+    @Get('/:id')
+    async getConversationByID(@Param('id') id: string) {
         return this.conversationsService.getConversationByID(id);
     }
 }

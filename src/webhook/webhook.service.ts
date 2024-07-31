@@ -1,5 +1,10 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConversationsService } from 'src/conversations/conversations.service';
+import { Conversation } from 'src/model/conversation.type';
 
 @Injectable()
 export class WebhookService {
@@ -13,15 +18,18 @@ export class WebhookService {
     }
     throw new UnauthorizedException();
   }
-  receiveMessage(body: WebhookMessage): void {
-    const getConversationByParticipantID = this.conversationsService.getConversationByParticipantID;
+  receiveMessage(body: WebhookMessage): Promise<Conversation[]> {
     if (body.object === 'page') {
-      return body.entry.forEach(function (entry) {
-        let webhook_event = entry.messaging[0];
-        console.log(webhook_event);
-        let sender_psid = webhook_event.sender.id;
-        return getConversationByParticipantID(sender_psid);
-      });
+      const sendersID = [
+        ...new Set(body.entry.map((entry) => entry.messaging[0].sender.id)),
+      ];
+      return Promise.all(
+        sendersID.map((conversation) =>
+          this.conversationsService.getConversationByParticipantID(
+            conversation,
+          ),
+        ),
+      );
     }
     throw new BadRequestException();
   }
